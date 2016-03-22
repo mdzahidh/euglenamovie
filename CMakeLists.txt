@@ -44,6 +44,6 @@ endforeach()
 
 
 link_directories(${MODULE_LIBRARY_DIRS})
-add_executable(moviemaker moviemaker.cpp )
-target_link_libraries(moviemaker ${MODULE_LIBRARIES})
-install (TARGETS moviemaker DESTINATION bin)
+add_executable(euglenamovie moviemaker.cpp )
+target_link_libraries(euglenamovie ${MODULE_LIBRARIES})
+install (TARGETS euglenamovie DESTINATION bin)

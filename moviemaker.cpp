@@ -3,17 +3,12 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <string>
-#include <opencv2/opencv.hpp>
 #include <dirent.h>
 #include <turbojpeg.h>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <queue>
+#include "getpot/GetPot"
 
 int width = 640, height=480;
 int fps = 10;
-std::string path = "/Users/zhossain/tmp/images/";
 
 std::string getExt(const std::string filename)
 {
@@ -48,7 +43,7 @@ void readJPEG(const std::string &fullpath, unsigned char* &rgbdata, int &width, 
     tjDestroy(_jpegDecompressor);
 }
 
-void loadAllImages()
+void loadAllImages(const std::string &path)
 {
     DIR *dirp = opendir(path.c_str());
     struct dirent* dp;
@@ -64,8 +59,33 @@ void loadAllImages()
     }
 }
 
+inline char separator()
+{
+#if defined _WIN32 || defined __CYGWIN__
+    return '\\';
+#else
+    return '/';
+#endif
+}
+
 int main(int argc, char **argv)
 {
+    GetPot cl(argc,argv);
+    
+    std::string path   = cl.follow("",2,"-i","--input");
+    
+    if (path.length() ==  0 ){
+        printf("Error: path not found\n");
+        exit(-1);
+    }
+    
+    if ( path[path.length()-1] != separator() ){
+        path = path + separator();
+    }
+    
+    std::string defaultMovie = path + std::string("movie.mp4");
+    std::string output = cl.follow(defaultMovie.c_str(),2,"-o","--output");
+    
     int fd[2];
     pid_t cpid;
     
@@ -78,8 +98,7 @@ int main(int argc, char **argv)
     }
 
     if(cpid == 0)
-    {
-        std::string output = "movie.mp4";
+    {        
         close(fd[1]);
         dup2(fd[0],0);
         close(fd[0]);
@@ -93,7 +112,7 @@ int main(int argc, char **argv)
         close(fd[0]);
         dup2(fd[1],1);
         close(fd[1]);
-        loadAllImages();
+        loadAllImages(path);
         close(1);
         exit(0);
     }
