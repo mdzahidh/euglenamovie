@@ -111,7 +111,7 @@ int main(int argc, char **argv)
         dup2(fd[0],0);
         close(fd[0]);
         
-        execl("/usr/local/bin/avconv","/usr/local/bin/avconv", "-y","-r","10","-f", "rawvideo", "-vcodec", "rawvideo","-s", "640x480", "-pix_fmt", "rgb24", "-i", "-","-an", output.c_str(),(void*)0);
+        execl("/usr/bin/avconv","/usr/local/bin/avconv", "-y","-r","10","-f", "rawvideo", "-vcodec", "rawvideo","-s", "640x480", "-pix_fmt", "rgb24", "-i", "-","-an", output.c_str(),(void*)0);
 
         printf("Failed to execute program");
         exit(-1);
