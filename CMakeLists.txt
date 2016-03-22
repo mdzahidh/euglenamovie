@@ -42,6 +42,9 @@ foreach(P ${MODULE_INCLUDE_DIRS})
     include_directories(${P})
 endforeach()
 
+if( NOT WIN32 )
+    set( UNIXFLAGS "-std=c++11" )
+elseif(WIN32)
 
 link_directories(${MODULE_LIBRARY_DIRS})
 add_executable(euglenamovie moviemaker.cpp )
