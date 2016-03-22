@@ -49,14 +49,21 @@ void loadAllImages(const std::string &path)
     DIR *dirp = opendir(path.c_str());
     struct dirent* dp;
     
+    std::vector<std::string> fileNames;
     while ((dp = readdir(dirp)) != NULL){
         if (getExt(dp->d_name) == "jpg") {
-            unsigned char* rgbdata;
-            int width,height;
-            readJPEG(path + std::string(dp->d_name), rgbdata, width, height);
-            write(1,rgbdata,width*height*3);
-            free(rgbdata);
+            fileNames.push_back(std::string(dp->d_name));
         }
+    }
+    
+    std::sort(fileNames.begin(), fileNames.end());
+    
+    for(size_t i=0;i<fileNames.size();i++){
+        unsigned char* rgbdata;
+        int width,height;
+        readJPEG(path + fileNames[i], rgbdata, width, height);
+        write(1,rgbdata,width*height*3);
+        free(rgbdata);
     }
 }
 
@@ -104,7 +111,7 @@ int main(int argc, char **argv)
         dup2(fd[0],0);
         close(fd[0]);
         
-        execl("/usr/bin/avconv","/usr/local/bin/avconv", "-y","-r","10","-f", "rawvideo", "-vcodec", "rawvideo","-s", "640x480", "-pix_fmt", "rgb24", "-i", "-","-an", output.c_str(),(void*)0);
+        execl("/usr/local/bin/avconv","/usr/local/bin/avconv", "-y","-r","10","-f", "rawvideo", "-vcodec", "rawvideo","-s", "640x480", "-pix_fmt", "rgb24", "-i", "-","-an", output.c_str(),(void*)0);
 
         printf("Failed to execute program");
         exit(-1);
