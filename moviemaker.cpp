@@ -98,7 +98,7 @@ int main(int argc, char **argv)
     }
 
     if(cpid == 0)
-    {        
+    {
         close(fd[1]);
         dup2(fd[0],0);
         close(fd[0]);
