@@ -44,7 +44,7 @@ endforeach()
 
 if( NOT WIN32 )
     set( UNIXFLAGS "-std=c++11" )
-elseif(WIN32)
+endif(WIN32)
 
 link_directories(${MODULE_LIBRARY_DIRS})
 add_executable(euglenamovie moviemaker.cpp )
